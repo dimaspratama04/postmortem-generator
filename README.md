@@ -6,7 +6,6 @@ A professional SRE Incident Postmortem Report Generator built with **Next.js 14*
 
 - **11 sections** based on industry-standard postmortem template
 - **Dynamic rows** — add/remove entries for Timeline, Metrics, Five Whys, Action Items, Comms Log, and Sign-Offs
-- **Export to DOCX** — formatted Word document with tables, headings, and styling
 - **Export to PDF** — full A4 PDF with color-coded tables and page numbers
 - **No auth, no database** — everything stays in your browser
 
@@ -58,7 +57,6 @@ src/
 │   └── Section9to11.tsx
 ├── lib/
 │   ├── defaults.ts         # Default data & ID generator
-│   ├── exportDocx.ts       # DOCX export (docx.js)
 │   └── exportPdf.ts        # PDF export (jsPDF + autoTable)
 └── types/
     └── postmortem.ts       # TypeScript interfaces
@@ -71,7 +69,6 @@ src/
 | Next.js 14        | React framework (App Router) |
 | TypeScript        | Type safety                  |
 | Tailwind CSS      | Utility classes              |
-| docx              | DOCX generation              |
 | jsPDF + autoTable | PDF generation               |
 | file-saver        | Browser file download        |
 | lucide-react      | Icons                        |
