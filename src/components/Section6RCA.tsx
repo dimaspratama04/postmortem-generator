@@ -115,7 +115,7 @@ export function Section6({ data, onChange }: Props) {
                 }}>
                 {label}
               </div>
-              <textarea className="field-input" value={(data as Record<string, string>)[key]} onChange={(e) => onChange({ [key]: e.target.value })} placeholder={placeholder} rows={2} style={{ fontSize: 13 }} />
+              <textarea className="field-input" onChange={(e) => onChange({ [key]: e.target.value })} placeholder={placeholder} rows={2} style={{ fontSize: 13 }} />
             </div>
           ))}
         </div>

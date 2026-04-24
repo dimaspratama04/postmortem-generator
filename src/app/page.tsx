@@ -29,7 +29,7 @@ const navItems = [
 
 export default function HomePage() {
   const [data, setData] = useState<PostmortemData>(getDefaultData);
-  const [isExporting, setIsExporting] = useState<"docx" | "pdf" | null>(null);
+  const [isExporting, setIsExporting] = useState<"pdf" | null>(null);
   const [activeSection, setActiveSection] = useState("section-1");
   const [showResetConfirm, setShowResetConfirm] = useState(false);
 
@@ -40,19 +40,6 @@ export default function HomePage() {
   const scrollToSection = (id: string) => {
     setActiveSection(id);
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
-
-  const handleExportDocx = async () => {
-    setIsExporting("docx");
-    try {
-      const { exportToDocx } = await import("@/lib/exportDocx");
-      await exportToDocx(data);
-    } catch (e) {
-      console.error(e);
-      alert("Export DOCX failed. Check console for details.");
-    } finally {
-      setIsExporting(null);
-    }
   };
 
   const handleExportPdf = async () => {
@@ -206,10 +193,6 @@ export default function HomePage() {
             flexDirection: "column",
             gap: 8,
           }}>
-          <button className="btn-primary" onClick={handleExportDocx} disabled={isExporting !== null} style={{ fontSize: 12, padding: "8px 14px", justifyContent: "center" }}>
-            <FileText size={14} />
-            {isExporting === "docx" ? "Exporting..." : "Export DOCX"}
-          </button>
           <button className="btn-primary" onClick={handleExportPdf} disabled={isExporting !== null} style={{ fontSize: 12, padding: "8px 14px", justifyContent: "center", background: "#7c3aed" }}>
             <FileDown size={14} />
             {isExporting === "pdf" ? "Exporting..." : "Export PDF"}
@@ -248,17 +231,13 @@ export default function HomePage() {
             }}>
             Incident Postmortem Generator
           </h1>
-          <p style={{ color: "var(--color-text-muted)", fontSize: 14 }}>Fill in the form below. Export to DOCX or PDF when ready. No data is stored — everything stays in your browser.</p>
+          <p style={{ color: "var(--color-text-muted)", fontSize: 14 }}>Fill in the form below. Export to PDF when ready. No data is stored — everything stays in your browser.</p>
           <div
             style={{
               display: "flex",
               gap: 12,
               marginTop: 20,
             }}>
-            <button className="btn-primary" onClick={handleExportDocx} disabled={isExporting !== null}>
-              <FileText size={16} />
-              {isExporting === "docx" ? "Generating DOCX..." : "Download DOCX"}
-            </button>
             <button className="btn-primary" onClick={handleExportPdf} disabled={isExporting !== null} style={{ background: "#7c3aed" }}>
               <FileDown size={16} />
               {isExporting === "pdf" ? "Generating PDF..." : "Download PDF"}
@@ -299,10 +278,6 @@ export default function HomePage() {
             <div style={{ fontSize: 12, color: "var(--color-text-muted)" }}>Review all sections above, then download your report.</div>
           </div>
           <div style={{ display: "flex", gap: 10 }}>
-            <button className="btn-primary" onClick={handleExportDocx} disabled={isExporting !== null}>
-              <FileText size={16} />
-              {isExporting === "docx" ? "Exporting..." : "Export DOCX"}
-            </button>
             <button className="btn-primary" onClick={handleExportPdf} disabled={isExporting !== null} style={{ background: "#7c3aed" }}>
               <FileDown size={16} />
               {isExporting === "pdf" ? "Exporting..." : "Export PDF"}

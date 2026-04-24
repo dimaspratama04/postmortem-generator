@@ -23,7 +23,7 @@ export function Section9({ data, onChange }: Props) {
     <SectionCard num="09" title="Lessons Learned" id="section-9">
       <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         {lessons.map(({ key, label, placeholder }) => (
-          <TextArea key={key} label={label} value={(data as Record<string, string>)[key]} onChange={(v) => onChange({ [key]: v })} placeholder={placeholder} rows={3} />
+          <TextArea key={key} label={label} value={data[key as keyof PostmortemData] as string} onChange={(v) => onChange({ [key]: v })} placeholder={placeholder} rows={3} />
         ))}
       </div>
     </SectionCard>
