@@ -126,7 +126,7 @@ export function Section11({ data, onChange }: Props) {
       <p style={{ fontSize: 12, color: "var(--color-text-dim)", marginBottom: 16, fontStyle: "italic" }}>This document must be reviewed and approved within 5 business days of incident resolution.</p>
 
       {/* Header */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 130px 130px 36px", gap: 8, padding: "4px 8px", marginBottom: 4 }}>
+      <div className="flex flex-col sm:flex-row mb-5 sm:justify-between">
         {["Role", "Name", "Date", "Sign-off", ""].map((h, i) => (
           <span key={i} className="field-label" style={{ marginBottom: 0 }}>
             {h}
@@ -136,11 +136,9 @@ export function Section11({ data, onChange }: Props) {
 
       {data.signOffs.map((so, index) => (
         <div
+          className="flex flex-col sm:flex-row"
           key={so.id}
           style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr 130px 130px 36px",
-            gap: 8,
             alignItems: "center",
             padding: 8,
             background: index % 2 === 0 ? "rgba(255,255,255,0.02)" : "transparent",
@@ -152,7 +150,7 @@ export function Section11({ data, onChange }: Props) {
           <input className="field-input" value={so.name} onChange={(e) => updateSignOff(so.id, "name", e.target.value)} placeholder="Full Name" style={{ fontSize: 13 }} />
           <input type="date" className="field-input" value={so.date} onChange={(e) => updateSignOff(so.id, "date", e.target.value)} style={{ fontSize: 13 }} />
           <input className="field-input" value={so.signoff} onChange={(e) => updateSignOff(so.id, "signoff", e.target.value)} placeholder="Approved" style={{ fontSize: 13 }} />
-          <button className="btn-danger" onClick={() => removeSignOff(so.id)} disabled={data.signOffs.length <= 1} style={{ padding: 6, justifyContent: "center", opacity: data.signOffs.length <= 1 ? 0.3 : 1 }}>
+          <button className="w-full md:w-80 btn-danger" onClick={() => removeSignOff(so.id)} disabled={data.signOffs.length <= 1} style={{ padding: 6, justifyContent: "center", opacity: data.signOffs.length <= 1 ? 0.3 : 1 }}>
             <Trash2 size={14} />
           </button>
         </div>

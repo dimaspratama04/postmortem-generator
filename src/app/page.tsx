@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
+import debounce from "lodash.debounce";
 import { FileDown, RotateCcw, AlertTriangle, Clock, BarChart2, Search, Wrench, ListChecks, BookOpen, MessageSquare, CheckSquare, Shield, Layers, Eye, FileText, X, ZoomIn, ZoomOut } from "lucide-react";
 import { PostmortemData } from "@/types/postmortem";
 import { getDefaultData } from "@/lib/defaults";
@@ -13,6 +14,8 @@ import { Section7 } from "@/components/Section7Resolution";
 import { Section8 } from "@/components/Section8ActionItems";
 import { Section9, Section10, Section11 } from "@/components/Section9to11";
 import { PdfPreview } from "@/components/PDFPreview";
+import { loadPostmortem, savePostmortem } from "@/lib/postmortemStorage";
+import ScrollToTop from "@/components/ScrollToTop";
 
 const navItems = [
   { id: "section-1", num: "01", label: "Snapshot", icon: Shield },
@@ -52,6 +55,26 @@ export default function HomePage() {
   const handleChange = useCallback((partial: Partial<PostmortemData>) => {
     setData((prev) => ({ ...prev, ...partial }));
   }, []);
+
+  // store to localstorage
+  useEffect(() => {
+    const stored = loadPostmortem();
+    if (stored) {
+      setData(stored);
+    } else {
+      // fallback initial data
+      setData((prev) => ({ ...prev }));
+    }
+  }, []);
+
+  // ✅ Debounced save (biar ga spam write)
+  const debouncedSave = debounce((d: PostmortemData) => {
+    savePostmortem(d);
+  }, 500);
+
+  useEffect(() => {
+    if (data) debouncedSave(data);
+  }, [data]);
 
   // Close preview on Escape
   useEffect(() => {
@@ -206,7 +229,7 @@ export default function HomePage() {
       </aside>
 
       {/* ── Main Content ─────────────────────────────────────── */}
-      <main style={{ flex: 1, overflowY: "auto", padding: "32px 32px 80px", maxWidth: 900 }}>
+      <main style={{ flex: 1, overflowY: "auto", padding: "32px 32px 80px" }}>
         <div style={{ marginBottom: 32 }}>
           <h1 style={{ fontSize: 28, fontWeight: 800, color: "var(--color-text)", marginBottom: 6, letterSpacing: "-0.02em" }}>Incident Postmortem Generator</h1>
           <p style={{ color: "var(--color-text-muted)", fontSize: 14 }}>Fill in the form below. Export to PDF when ready. No data is stored — everything stays in your browser.</p>
@@ -234,7 +257,6 @@ export default function HomePage() {
           <Section10 data={data} onChange={handleChange} />
           <Section11 data={data} onChange={handleChange} />
         </div>
-
         <div
           style={{
             marginTop: 40,
@@ -243,24 +265,12 @@ export default function HomePage() {
             border: "1px solid var(--color-border)",
             borderRadius: "var(--radius-lg)",
             display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
+            justifyContent: "center",
             gap: 16,
           }}>
-          <div>
-            <div style={{ fontSize: 14, fontWeight: 600, color: "var(--color-text)", marginBottom: 2 }}>Siap download?</div>
-            <div style={{ fontSize: 12, color: "var(--color-text-muted)" }}>Preview dulu, lalu export sebagai PDF.</div>
-          </div>
-          <div style={{ display: "flex", gap: 10 }}>
-            <button className="btn-secondary" onClick={() => setPreviewOpen(true)}>
-              <Eye size={15} /> Preview
-            </button>
-            <button className="btn-primary" onClick={handleExportPdf} disabled={isExporting} style={{ background: "#7c3aed" }}>
-              <FileDown size={16} />
-              {isExporting ? "Exporting..." : "Download PDF"}
-            </button>
-          </div>
+          <h1 className="text-center">Crafted by Dimas Pratama • Open-source Postmortem Report Tool</h1>
         </div>
+        <ScrollToTop />
       </main>
 
       {/* ── Preview Modal ─────────────────────────────────────── */}

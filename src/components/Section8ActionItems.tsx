@@ -67,6 +67,7 @@ export function Section8({ data, onChange }: Props) {
 
       {data.actionItems.map((ai, index) => (
         <div
+          className="flex flex-col"
           key={ai.id}
           style={{
             padding: 14,
@@ -80,12 +81,9 @@ export function Section8({ data, onChange }: Props) {
             <input className="field-input" value={ai.actionId} onChange={(e) => updateItem(ai.id, "actionId", e.target.value)} style={{ width: 80, fontSize: 13, fontFamily: "var(--font-mono)", flexShrink: 0 }} />
             {/* Description */}
             <input className="field-input" value={ai.description} onChange={(e) => updateItem(ai.id, "description", e.target.value)} placeholder="Describe the action clearly and measurably..." style={{ fontSize: 13, flex: 1 }} />
-            <button className="btn-danger" onClick={() => removeItem(ai.id)} style={{ padding: 6, justifyContent: "center", flexShrink: 0 }}>
-              <Trash2 size={13} />
-            </button>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 120px 110px 130px 120px", gap: 8, paddingLeft: 88 }}>
+          <div className="flex flex-col">
             {/* Owner */}
             <input className="field-input" value={ai.owner} onChange={(e) => updateItem(ai.id, "owner", e.target.value)} placeholder="Owner / Team" style={{ fontSize: 12 }} />
             {/* Due Date */}
@@ -114,6 +112,9 @@ export function Section8({ data, onChange }: Props) {
                 </option>
               ))}
             </select>
+            <button className="btn-danger" onClick={() => removeItem(ai.id)} style={{ padding: 6, justifyContent: "center", flexShrink: 0 }}>
+              <Trash2 size={13} />
+            </button>
           </div>
         </div>
       ))}

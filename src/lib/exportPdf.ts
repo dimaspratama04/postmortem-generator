@@ -2,33 +2,37 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { PostmortemData } from "@/types/postmortem";
 
-const PRIMARY = [30, 27, 75] as [number, number, number]; // #1e1b4b
-const ACCENT = [67, 56, 202] as [number, number, number]; // #4338ca
-const LIGHT = [224, 234, 255] as [number, number, number]; // #e0eaff
+const PRIMARY = [31, 41, 55] as [number, number, number]; // slate-800 (header utama)
+const SECONDARY = [71, 85, 105] as [number, number, number]; // slate-600 (subheader)
+const BORDER = [203, 213, 225] as [number, number, number]; // slate-300
+const LIGHT = [248, 250, 252] as [number, number, number]; // slate-50
+const ALT_ROW = [241, 245, 249] as [number, number, number]; // slate-100
 const WHITE = [255, 255, 255] as [number, number, number];
-const ALT_ROW = [240, 244, 255] as [number, number, number]; // #f0f4ff
-const TEXT_DARK = [15, 23, 42] as [number, number, number];
+const TEXT_DARK = [15, 23, 42] as [number, number, number]; // slate-900
+const TEXT_MUTED = [100, 116, 139] as [number, number, number]; // slate-500
 
 function addSectionHeader(doc: jsPDF, text: string, y: number): number {
   doc.setFillColor(...PRIMARY);
-  doc.rect(14, y, 182, 8, "F");
-  doc.setTextColor(...WHITE);
-  doc.setFontSize(11);
+  doc.rect(14, y, 182, 7, "F");
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(10);
   doc.setFont("helvetica", "bold");
-  doc.text(text, 16, y + 5.5);
+  doc.text(text, 16, y + 4.8);
   doc.setTextColor(...TEXT_DARK);
-  return y + 12;
+  return y + 9;
 }
 
 function addSubHeader(doc: jsPDF, text: string, y: number): number {
-  doc.setFillColor(...ACCENT);
-  doc.rect(14, y, 182, 7, "F");
-  doc.setTextColor(...WHITE);
-  doc.setFontSize(10);
+  doc.setFillColor(...LIGHT);
+  doc.rect(14, y, 182, 6, "F");
+  doc.setDrawColor(...BORDER);
+  doc.line(14, y + 6, 196, y + 6);
+  doc.setTextColor(...SECONDARY);
+  doc.setFontSize(9);
   doc.setFont("helvetica", "bold");
-  doc.text(text, 16, y + 5);
+  doc.text(text, 16, y + 4);
   doc.setTextColor(...TEXT_DARK);
-  return y + 11;
+  return y + 8;
 }
 
 function checkPageBreak(doc: jsPDF, y: number, needed = 20): number {
@@ -60,23 +64,30 @@ export function exportToPdf(data: PostmortemData): void {
   const pageW = doc.internal.pageSize.getWidth();
 
   // ── COVER ───────────────────────────────────────────────
-  doc.setFillColor(...PRIMARY);
-  doc.rect(0, 0, pageW, 50, "F");
-
-  doc.setTextColor(...WHITE);
-  doc.setFontSize(20);
   doc.setFont("helvetica", "bold");
-  doc.text("INCIDENT POSTMORTEM REPORT", pageW / 2, 22, { align: "center" });
-
-  doc.setFontSize(13);
-  doc.setFont("helvetica", "normal");
-  doc.text(data.serviceSystem || "[Service / System Name]", pageW / 2, 32, { align: "center" });
-
-  doc.setFontSize(9);
-  doc.text(`Incident Date: ${data.incidentDate}   |   Version: ${data.reportVersion}`, pageW / 2, 42, { align: "center" });
-
+  doc.setFontSize(18);
   doc.setTextColor(...TEXT_DARK);
-  let y = 58;
+  doc.text("INCIDENT POSTMORTEM REPORT", pageW / 2, 20, { align: "center" });
+
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(13);
+  doc.setTextColor(100, 116, 139); // muted gray
+  doc.text(data.serviceSystem || "[Service / System Name]", pageW / 2, 28, { align: "center" });
+
+  // metadata
+  doc.setFontSize(9);
+  doc.text(`Incident Date: ${data.incidentDate || "—"}   |   Version: ${data.reportVersion || "—"}`, pageW / 2, 34, { align: "center" });
+
+  // divider line (biar clean kayak preview)
+  doc.setDrawColor(229, 231, 235); // gray-200
+  doc.setLineWidth(0.5);
+  doc.line(14, 40, pageW - 14, 40);
+
+  // reset text color
+  doc.setTextColor(...TEXT_DARK);
+
+  // start content
+  let y = 46;
 
   // ── SECTION 1: SNAPSHOT ─────────────────────────────────
   y = addSectionHeader(doc, "1. Incident Snapshot", y);
@@ -105,7 +116,7 @@ export function exportToPdf(data: PostmortemData): void {
   y = addSectionHeader(doc, "2. Severity Reference Guide", y);
   autoTable(doc, {
     startY: y,
-    margin: { left: 14, right: 14 },
+    margin: { left: 14, right: 14, top: 0 },
     head: [["Level", "Name", "Criteria", "Response"]],
     body: [
       ["SEV-1", "Critical", "Full outage / data loss / security breach", "Immediate all-hands; exec notification"],
