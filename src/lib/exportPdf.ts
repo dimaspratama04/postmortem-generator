@@ -127,10 +127,11 @@ export function exportToPdf(data: PostmortemData): void {
   doc.setFontSize(9);
   doc.setFont("helvetica", "normal");
   const summaryLines = doc.splitTextToSize(data.executiveSummary || "—", 178);
-  doc.setFillColor(...ALT_ROW);
-  doc.rect(14, y, 182, summaryLines.length * 5 + 4, "F");
-  doc.text(summaryLines, 16, y + 4);
-  y += summaryLines.length * 5 + 10;
+  summaryLines.forEach((line: string) => {
+    y = checkPageBreak(doc, y);
+    doc.text(line, 16, y);
+    y += 5;
+  });
 
   // ── SECTION 4: TIMELINE ─────────────────────────────────
   y = checkPageBreak(doc, y, 40);
@@ -159,8 +160,10 @@ export function exportToPdf(data: PostmortemData): void {
   if (impactLines.length > 0) {
     impactLines.forEach((line) => {
       y = checkPageBreak(doc, y);
-      doc.text(`• ${line}`, 16, y);
-      y += 5;
+      const maxWidth = 180;
+      const wrapped = doc.splitTextToSize(`• ${line}`, maxWidth);
+      doc.text(wrapped, 16, y);
+      y += wrapped.length * 5;
     });
   } else {
     doc.text("—", 16, y);
@@ -190,10 +193,11 @@ export function exportToPdf(data: PostmortemData): void {
   doc.setFontSize(9);
   const rcaLines = doc.splitTextToSize(data.primaryRootCause || "—", 178);
   doc.setFillColor(...ALT_ROW);
-  doc.rect(14, y, 182, rcaLines.length * 5 + 4, "F");
-  doc.setFont("helvetica", "normal");
-  doc.text(rcaLines, 16, y + 4);
-  y += rcaLines.length * 5 + 10;
+  rcaLines.forEach((line: string) => {
+    y = checkPageBreak(doc, y);
+    doc.text(line, 16, y);
+    y += 5;
+  });
 
   y = checkPageBreak(doc, y, 40);
   y = addSubHeader(doc, "6.2 Whys Analysis", y);
@@ -240,10 +244,12 @@ export function exportToPdf(data: PostmortemData): void {
   doc.setFontSize(9);
   doc.setFont("helvetica", "normal");
   if (mitSteps.length > 0) {
-    mitSteps.forEach((step) => {
+    mitSteps.forEach((line) => {
       y = checkPageBreak(doc, y);
-      doc.text(`• ${step}`, 16, y);
-      y += 5;
+      const maxWidth = 180;
+      const wrapped = doc.splitTextToSize(`• ${line}`, maxWidth);
+      doc.text(wrapped, 16, y);
+      y += wrapped.length * 5;
     });
   } else {
     doc.text("—", 16, y);
@@ -254,10 +260,11 @@ export function exportToPdf(data: PostmortemData): void {
   y = addSubHeader(doc, "7.2 Recovery Outcome", y);
   const recovLines = doc.splitTextToSize(data.recoveryOutcome || "—", 178);
   doc.setFillColor(...ALT_ROW);
-  doc.rect(14, y, 182, recovLines.length * 5 + 4, "F");
-  doc.setFont("helvetica", "normal");
-  doc.text(recovLines, 16, y + 4);
-  y += recovLines.length * 5 + 10;
+  recovLines.forEach((line: string) => {
+    y = checkPageBreak(doc, y);
+    doc.text(line, 16, y);
+    y += 5;
+  });
 
   y = checkPageBreak(doc, y, 25);
   y = addSubHeader(doc, "7.3 Long-Term Fix", y);
@@ -266,8 +273,10 @@ export function exportToPdf(data: PostmortemData): void {
   if (ltfLines.length > 0) {
     ltfLines.forEach((line) => {
       y = checkPageBreak(doc, y);
-      doc.text(`• ${line}`, 16, y);
-      y += 5;
+      const maxWidth = 180;
+      const wrapped = doc.splitTextToSize(`• ${line}`, maxWidth);
+      doc.text(wrapped, 16, y);
+      y += wrapped.length * 5;
     });
   } else {
     doc.text("—", 16, y);
@@ -344,8 +353,10 @@ export function exportToPdf(data: PostmortemData): void {
   if (extLines.length > 0) {
     extLines.forEach((line) => {
       y = checkPageBreak(doc, y);
-      doc.text(`• ${line}`, 16, y);
-      y += 5;
+      const maxWidth = 180;
+      const wrapped = doc.splitTextToSize(`• ${line}`, maxWidth);
+      doc.text(wrapped, 16, y);
+      y += wrapped.length * 5;
     });
   } else {
     doc.text("—", 16, y);

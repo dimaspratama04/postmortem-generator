@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Postmortem Generator | SRE Tool",
-  description: "Generate professional incident postmortem reports. Export to DOCX or PDF.",
+  description: "Generate professional incident postmortem reports. Support export to PDF only.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

@@ -32,7 +32,7 @@ export function Section4({ data, onChange }: Props) {
       <p style={{ fontSize: 12, color: "var(--color-text-dim)", marginBottom: 16, fontStyle: "italic" }}>List all key events chronologically. Include alert trigger, investigation steps, mitigation actions, and resolution.</p>
 
       {/* Table header */}
-      <div style={{ display: "grid", gridTemplateColumns: "100px 180px 1fr 36px", gap: 8, padding: "6px 8px", marginBottom: 4 }}>
+      <div className="md:flex md:justify-between" style={{ gap: 8, padding: "6px 8px", marginBottom: 4 }}>
         {["Time", "Actor", "Event / Action", ""].map((h, i) => (
           <span key={i} className="field-label" style={{ marginBottom: 0 }}>
             {h}
@@ -42,9 +42,10 @@ export function Section4({ data, onChange }: Props) {
 
       {data.timeline.map((entry, index) => (
         <div
+          className="md:flex md:justify-between "
           key={entry.id}
           style={{
-            display: "grid",
+            // display: "grid",
             gridTemplateColumns: "100px 180px 1fr 36px",
             gap: 8,
             alignItems: "center",
